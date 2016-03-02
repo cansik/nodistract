@@ -10,6 +10,10 @@ if (PHP_SAPI == 'cli-server') {
 
 require __DIR__ . '/../vendor/autoload.php';
 
+// Models
+require "../models/post.php";
+require "../models/user.php";
+
 session_start();
 
 // Instantiate the app

@@ -10,10 +10,11 @@ class Post extends Entity
         return [
             'id'           => ['type' => 'integer', 'primary' => true, 'autoincrement' => true],
             'title'        => ['type' => 'string', 'required' => true],
-            'body'         => ['type' => 'text', 'required' => true],
-            'status'       => ['type' => 'integer', 'default' => 0, 'index' => true],
+            'path'         => ['type' => 'string', 'required' => true],
+            'content'      => ['type' => 'text', 'required' => true],
+            'published'    => ['type' => 'boolean', 'default' => false, 'index' => true],
             'author_id'    => ['type' => 'integer', 'required' => true],
-            'date_created' => ['type' => 'datetime', 'value' => new \DateTime()]
+            'publish_date' => ['type' => 'datetime', 'value' => new \DateTime()]
         ];
     }
 }

@@ -1,32 +1,37 @@
 <?php
-// Routes
-require "../models/post.php";
-require "../models/user.php";
 
-$app->get('/[{name}]', function ($request, $response, $args) {
+$app->get('/', function ($request, $response, $args) {
     // Sample log message
-    $this->logger->info("Slim-Skeleton '/' route");
+    $this->logger->info("main route");
 
+    $postMapper = spot()->mapper('Entity\Post');
+    $result = $postMapper->all()->select()->execute();
+    $posts = $result->toArray();
 
-    // database config
-    $cfg = new \Spot\Config();
-
-    $cfg->addConnection('pgsql', [
-        'dbname' => 'nodistract',
-        'user' => 'postgres',
-        'password' => '',
-        'host' => 'localhost',
-        'driver' => 'pdo_pgsql',
-    ]);
-
-
-
-    $post = new \Entity\Post();
-    $spot = new \Spot\Locator($cfg);
-
-    $postMapper = $spot->mapper('Entity\Post');
-    $result = $postMapper->all();
+    $params = array(
+        "posts" => $posts
+    );
 
     // Render index view
-    return $this->renderer->render($response, 'index.phtml', $args);
+    return $this->renderer->render($response, 'index.phtml', $params);
 });
+
+
+function spot() {
+    static $spot;
+    if($spot === null) {
+        // database config
+        $cfg = new \Spot\Config();
+
+        $cfg->addConnection('pgsql', [
+            'dbname' => 'nodistract',
+            'user' => 'postgres',
+            'password' => '',
+            'host' => 'localhost',
+            'driver' => 'pdo_pgsql',
+        ]);
+
+        $spot = new \Spot\Locator($cfg);
+    }
+    return $spot;
+}

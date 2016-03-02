@@ -2,6 +2,10 @@
     <head>
         <meta charset="utf-8"/>
         <title>Nodistract</title>
+
+        <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.2.0/styles/default.min.css">
+        <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.2.0/highlight.min.js"></script>
+        <script>hljs.initHighlightingOnLoad();</script>
         <link href='//fonts.googleapis.com/css?family=Lato:300' rel='stylesheet' type='text/css'>
         <style>
             body {
@@ -25,13 +29,21 @@
         </style>
     </head>
     <body>
-        <h1>Slim</h1>
-        <div>a microframework for PHP</div>
+        <h1>Nodistract</h1>
+        <div>A simple blog with markdown.</div>
 
-        <?php if (isset($name)) : ?>
-            <h2>Hello <?= htmlspecialchars($name); ?>!</h2>
+        <?php if (isset($posts)) : ?>
+            <?php foreach($posts as $post): ?>
+                <h2><?= htmlspecialchars($post['title']); ?></h2>
+                <div>
+                <?php
+                    $Parsedown = new Parsedown();
+                    echo($Parsedown->text($post['content']));
+                ?>
+                </div>
+            <?php endforeach; ?>
         <?php else: ?>
-            <p>Try <a href="/SlimFramework">/SlimFramework</a>
+            <p>Sorry, no posts found!</p>
         <?php endif; ?>
     </body>
 </html>
