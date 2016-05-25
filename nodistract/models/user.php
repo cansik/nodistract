@@ -10,7 +10,9 @@ class User extends Entity
         return [
             'id'           => ['type' => 'integer', 'primary' => true, 'autoincrement' => true],
             'username'     => ['type' => 'string', 'required' => true],
-            'email'        => ['type' => 'string', 'required' => true]
+            'password'     => ['type' => 'string', 'required' => true],
+            'email'        => ['type' => 'string', 'required' => true],
+            'token'        => ['type' => 'string', 'required' => false]
         ];
     }
 }
