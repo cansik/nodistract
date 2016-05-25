@@ -26,15 +26,31 @@
                 font-weight: 200;
                 margin-bottom: 0;
             }
+
+            a:link {
+                text-decoration: none;
+            }
+
+            a:visited {
+                text-decoration: none;
+            }
+
+            a:hover {
+                text-decoration: underline;
+            }
+
+            a:active {
+                text-decoration: underline;
+            }
         </style>
     </head>
     <body>
-        <h1>Nodistract</h1>
+        <a href="/"><h1>Nodistract</h1></a>
         <div>A simple blog with markdown.</div>
 
         <?php if (isset($posts)) : ?>
             <?php foreach($posts as $post): ?>
-                <h2><?= htmlspecialchars($post['title']); ?></h2>
+                <a href="post/<?= htmlspecialchars($post['path']); ?>"><h2><?= htmlspecialchars($post['title']); ?></h2></a>
                 <div>
                 <?php
                     $Parsedown = new Parsedown();

@@ -113,6 +113,9 @@ DELETE /api/post/{id}?token=1234
 
 Description: *Login to the system as a user.*
 
+* Username = string
+* Password = sha256 hash
+
 *Example*
 
 ```php

@@ -32,7 +32,7 @@ $app->get('/', function ($request, $response, $args) {
     $this->logger->info("main route");
 
     $postMapper = spot()->mapper('Entity\Post');
-    $result = $postMapper->all()->select()->execute();
+    $result = $postMapper->where(['published' => 1])->select()->execute();
     $posts = $result->toArray();
 
     $params = array(
@@ -42,6 +42,24 @@ $app->get('/', function ($request, $response, $args) {
     // Render index view
     return $this->renderer->render($response, 'index.phtml', $params);
 });
+
+$app->get('/post/{slug}', function ($request, $response, $args) {
+    // Sample log message
+    $this->logger->info("get page with slug route");
+
+    $postMapper = spot()->mapper('Entity\Post');
+    $result = $postMapper->where(['path' => $args['slug']])->select()->execute();
+    $posts = $result->toArray();
+
+    $params = array(
+        "posts" => $posts
+    );
+
+    // Render index view
+    return $this->renderer->render($response, 'index.phtml', $params);
+});
+
+// -----  API -----
 
 $app->get('/api/post', function ($request, $response, $args) use ($app) {
     // check if user is logged in
