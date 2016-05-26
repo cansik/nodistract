@@ -1,0 +1,5 @@
+{
+    "require": {
+        "palanik/corsslim": "^1.1"
+    }
+}

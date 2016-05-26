@@ -1,9 +1,25 @@
 <?php
 
-function toJSON($data, $response)
+function getStringBetween($str,$from,$to)
+{
+    $sub = substr($str, strpos($str,$from)+strlen($from),strlen($str));
+    return substr($sub,0,strpos($sub,$to));
+}
+
+
+function asJSON($data, $response)
 {
     $response->getBody()->write(json_encode($data));
     return $response->withHeader('Content-type', 'application/json');
+}
+
+function asImage($base64String, $response)
+{
+    $contentType = getStringBetween($base64String, ':', ';');
+    $data = substr($base64String, strpos($base64String,',')+1,strlen($base64String));
+
+    $response->getBody()->write(base64_decode($data));
+    return $response->withHeader('Content-type', $contentType);
 }
 
 function getCurrentUser($request)
@@ -24,7 +40,7 @@ function getCurrentUser($request)
 
 function unauthorizedError($response)
 {
-    return toJSON(array('error' => 'You are not logged in!'), $response);
+    return asJSON(array('error' => 'You are not logged in!'), $response);
 }
 
 $app->get('/', function ($request, $response, $args) {
@@ -61,9 +77,89 @@ $app->get('/post/{slug}', function ($request, $response, $args) {
 
 // -----  API -----
 
+// ----- images ----
+$app->get('/api/image', function ($request, $response, $args) use ($app) {
+    // check if user is logged in
+    if(getCurrentUser($request) === null)
+        return unauthorizedError($response);
+
+    $imageMapper = spot()->mapper('Entity\Image');
+    $result = $imageMapper->all()->select()->execute();
+    $images = $result->toArray();
+
+    foreach($images as $img) {
+        $img['data'] = null;
+        $img['url'] = '/api/image/'.$img['id'];
+    }
+
+    $result = array(
+        "images" => $images
+    );
+
+    return asJSON($result, $response);
+});
+
+$app->get('/api/image/{id}', function ($request, $response, $args) use ($app) {
+    $imageMapper = spot()->mapper('Entity\Image');
+    $image = $imageMapper->first(['id' => $args['id']]);
+
+    // check raw
+    $getParams = $request->getQueryParams();
+    if(!array_key_exists('raw',$getParams))
+        return asImage($image->data, $response);
+
+    return $image->data;
+});
+
+$app->post('/api/image', function ($request, $response, $args) use($app) {
+    // check if user is logged in
+    if(getCurrentUser($request) === null)
+        return unauthorizedError($response);
+
+    $this->logger->info("insert new image");
+
+    $json = $request->getBody();
+    $data = json_decode($json, true);
+
+    $imageMapper = spot()->mapper('Entity\Image');
+    $entity = $imageMapper->create($data);
+
+    $result = array(
+        "id" => $entity->id,
+        "url" => '/api/image/'.$entity->id
+    );
+
+    return asJSON($result, $response);
+});
+
+$app->delete('/api/image/{id}', function ($request, $response, $args) use($app) {
+    // check if user is logged in
+    if(getCurrentUser($request) === null)
+        return unauthorizedError($response);
+
+    $id = $args['id'];
+    $this->logger->info("delete image " . $id);
+
+    $imageMapper = spot()->mapper('Entity\Image');
+    $entity = $imageMapper->first(['id' => $id]);
+
+    if ($entity) {
+        $imageMapper->delete($entity);
+    }
+
+    $result = array(
+        "id" => $id
+    );
+
+    return asJSON($result, $response);
+});
+
+
+// ----- posts -----
+
 $app->get('/api/post', function ($request, $response, $args) use ($app) {
     // check if user is logged in
-    if(getCurrentUser($request) == null)
+    if(getCurrentUser($request) === null)
         return unauthorizedError($response);
 
     $this->logger->info("main route");
@@ -76,12 +172,12 @@ $app->get('/api/post', function ($request, $response, $args) use ($app) {
         "posts" => $posts
     );
 
-    return toJSON($result, $response);
+    return asJSON($result, $response);
 });
 
 $app->post('/api/post', function ($request, $response, $args) use($app) {
     // check if user is logged in
-    if(getCurrentUser($request) == null)
+    if(getCurrentUser($request) === null)
         return unauthorizedError($response);
 
     $this->logger->info("insert new post");
@@ -96,12 +192,12 @@ $app->post('/api/post', function ($request, $response, $args) use($app) {
         "id" => $entity->id
     );
 
-    return toJSON($result, $response);
+    return asJSON($result, $response);
 });
 
 $app->delete('/api/post/{id}', function ($request, $response, $args) use($app) {
     // check if user is logged in
-    if(getCurrentUser($request) == null)
+    if(getCurrentUser($request) === null)
         return unauthorizedError($response);
 
 
@@ -119,8 +215,10 @@ $app->delete('/api/post/{id}', function ($request, $response, $args) use($app) {
         "id" => $entity->id
     );
 
-    return toJSON($result, $response);
+    return asJSON($result, $response);
 });
+
+// ---- Authentication ----
 
 $app->post('/api/login', function ($request, $response, $args) use ($app) {
     $this->logger->info("login");
@@ -139,7 +237,7 @@ $app->post('/api/login', function ($request, $response, $args) use ($app) {
 
     $result = array();
 
-    if ($user and $user->password == $pw_hash) {
+    if ($user and $user->password === $pw_hash) {
         $token = hash('sha1', time() . '' . $password);
         $user->token = $token;
         $userMapper->save($user);
@@ -155,7 +253,7 @@ $app->post('/api/login', function ($request, $response, $args) use ($app) {
         $result['error'] = 'Password or username wrong!';
     }
 
-    return toJSON($result, $response);
+    return asJSON($result, $response);
 });
 
 $app->get('/api/logout', function ($request, $response, $args) use ($app) {
@@ -163,7 +261,7 @@ $app->get('/api/logout', function ($request, $response, $args) use ($app) {
 
     $user = getCurrentUser($request);
 
-    if ($user != null) {
+    if ($user !== null) {
         $user->token = null;
 
         $userMapper = spot()->mapper('Entity\User');
@@ -178,7 +276,7 @@ $app->get('/api/logout', function ($request, $response, $args) use ($app) {
         "id" => $user->id
     );
 
-    return toJSON($result, $response);
+    return asJSON($result, $response);
 });
 
 
