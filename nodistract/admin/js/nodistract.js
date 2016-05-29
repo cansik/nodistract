@@ -49,7 +49,7 @@ function getPosts(){
 function addPost(){
     var body = {
         "title":$("#title").val(),
-        "path":"example-post",
+        "path": $("#title").val().split(' ').join('-').toLowerCase(),
         "content":$("#content").val(),
         "published":($("#publishEntry").is(":checked") ? 1 : 0),
         "author_id":1
