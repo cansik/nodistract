@@ -16,7 +16,7 @@ function login(username,password){
         data: JSON.stringify({'username':username,'password':SHA256(password)}),
         success: function(data){
             if(data['error'] == undefined){
-                $.cookie('token',data["token"]);
+                localStorage.token = data["token"];
             } else {
                 error = data['error'];
             }
@@ -29,8 +29,8 @@ function login(username,password){
 }
 
 function logout(){
-    $.get( apiBaseUrl + "logout?token="+ $.cookie('token'), function() {
-        $.removeCookie('token');
+    $.get( apiBaseUrl + "logout?token="+ localStorage.token, function() {
+        localStorage.removeItem("token");
     });
 
     window.location.href = redirectUrl;
@@ -38,7 +38,7 @@ function logout(){
 
 function getPosts(){
     $("#posts").html("");
-    $.get( apiBaseUrl + "post?token="+ $.cookie('token'), function( data ) {
+    $.get( apiBaseUrl + "post?token="+ localStorage.token, function( data ) {
         jQuery.each(data["posts"], function() {
             console.log(this);
             $("#posts").append(generatePost(this));
@@ -57,7 +57,7 @@ function addPost(){
 
     $.ajax({
         type: 'POST',
-        url: apiBaseUrl + "post?token="+ $.cookie('token'),
+        url: apiBaseUrl + "post?token="+ localStorage.token,
         data:JSON.stringify(body),
         dataType:'json',
         success: function(data) { console.log("ADd completed");},
@@ -68,7 +68,7 @@ function addPost(){
 function deletePost(id){
     $.ajax({
         type: 'DELETE',
-        url: apiBaseUrl + 'post/'+id+'?token='+$.cookie('token'),
+        url: apiBaseUrl + 'post/'+id+'?token='+localStorage.token,
         success: function() { console.log("Delete completed");},
         async:false
     });
@@ -146,24 +146,24 @@ $(window).load(function() {
 
     $("#form").hide();
 
-    if ($.cookie('token') == undefined) {
-        $("#loginDialog").html(generateLoginForm());
-        $("#loginDialog").modal("show");
-    }  else {
+    if (localStorage.token) {
         $("#form").show();
         getPosts();
+    }  else {
+        $("#loginDialog").html(generateLoginForm());
+        $("#loginDialog").modal("show");
     }
 
     $('body').on('click', '#loginBtn', function () {
         var res = login($("#username").val(),$("#password").val());
-        if ($.cookie('token') == undefined) {
-            $("#loginDialog").modal("show");
-            $("#errorMessage").html(res);
-        } else {
+        if (localStorage.token) {
             $('#loginDialog').modal('hide');
             $("#loginDialog").html("");
             $("#form").show();
             getPosts();
+        } else {
+            $("#loginDialog").modal("show");
+            $("#errorMessage").html(res);
         }
     });
 
