@@ -25,12 +25,12 @@ function login(username,password){
         data: JSON.stringify({'username':username,'password':SHA256(password)}),
         success: function(data){
             // Check if error is returned or not
-            if(data['error'] == undefined){
+            if(data.error === undefined){
 
                 // If no error is return, save the returned token into localstorage to identify the loggedin user
-                localStorage.token = data["token"];
+                localStorage.token = data.token;
             } else {
-                error = data['error'];
+                error = data.eror;
             }
         },
         dataType: 'json',
@@ -40,13 +40,15 @@ function login(username,password){
     return error;
 }
 
+function test(){
+    localStorage.removeItem("token");
+}
+
 /**
  * Function to logout a user of the system. Removes the token from the localstorage
  */
 function logout(){
-    $.get( apiBaseUrl + "logout?token="+ localStorage.token, function() {
-        localStorage.removeItem("token");
-    });
+    $.get( apiBaseUrl + "logout?token="+ localStorage.token, test());
 
     window.location.href = redirectUrl;
 }
@@ -60,10 +62,11 @@ function getPosts(){
     $("#posts").html("");
 
     $.get( apiBaseUrl + "post?token="+ localStorage.token, function( data ) {
-        jQuery.each(data["posts"], function() {
+        jQuery.each(data.posts, function() {
 
             // Generate a Container for each post and append it into the main-Post-Container
             $("#posts").append(generatePost(this));
+            $("#posts").append("<br />");
         });
     });
 }
@@ -77,7 +80,7 @@ function getImages(){
     $("#images").html("");
     $("#images").append("<ul>");
     $.get( apiBaseUrl + "image?token="+ localStorage.token, function( data ) {
-        jQuery.each(data["images"], function() {
+        jQuery.each(data.images, function() {
 
             // Generate a Container for each image and append it into the main-Image-Container
             $("#images").append(generateImage(this));
@@ -168,9 +171,10 @@ function deleteImage(id) {
  * @returns {string} HTML which displays the image
  */
 function generateImage(image) {
-
+    var imageId = image.id;
     //var label = "<li><input type='checkbox' id='cb_"+image["id"]+"' /><label for='cb_"+image["id"]+"'><img class='blogImage' src='" + image["data"] + "' title='" + image["title"] + "' id='"+image["id"]+"'/><span class='close'></span></label></li>";
-    var label = "<li><input type='checkbox' id='cb_"+image["id"]+"' /><img class='blogImage' src='" + image["data"] + "' title='" + image["title"] + "' id='"+image["id"]+"'/><span class='close'></span></li>";
+    var label = "<li><input type='checkbox' id='cb_"+imageId+"' /><img class='blogImage' src='" + image.data + "' title='" + image.title + "' id='"+imageId+"'/><span class='close'></span></li>";
+    var label = "<li><article><label for='cb_"+imageId+"'><img class='blogImage' src='" + image.data + "' title='" + image.title + "' id='"+imageId+"'/><span class='close'></span></label></article></li>";
     return label;
 }
 
@@ -180,10 +184,15 @@ function generateImage(image) {
  * @returns {string} HTML which displays a post
  */
 function generatePost(post) {
-    var title = post["title"];
-    var id = post["id"];
-    var content = post["content"];
-    var published = post["published"];
+    var published_date = post.publish_date.date;
+    var title = post.title;
+    var id = post.id;
+    var content = post.content;
+    var published = post.published;
+    var header = "<header><span class='icon icon-pencil' onclick='loadPostToEdit(" + id + ")'></span><span class='icon icon-remove' onclick='deletePost(" + id + ");getPosts();'></span>"+(published ? "<span class='icon icon-share'></span> " : "<span class='icon icon-lock' '></span> ")+"</header>";
+    var contentPart = "<p><time>"+ published_date +"</time>|<span class='title'>" +title + "</span></p><details><summary>Extend Content</summary><p><span class='content'>" + content + "</span><input type='hidden' value='" + published + "' name='published' /></p></details>";
+    var article = "<article id='entry_"+id+"'>" + header + contentPart + "</article>";
+    /*
     var row = "<div class='row' id='entry_" + id + "'>" +
         "<span class='icon icon-pencil' onclick='loadPostToEdit(" + id + ")'></span>" +
         "<span class='icon icon-remove' onclick='deletePost(" + id + ");getPosts();'></span> " +
@@ -193,8 +202,9 @@ function generatePost(post) {
         "<input type='hidden' value='" + published + "' name='published' />" +
         "</div>" +
         "<hr />";
+    */
 
-    return row;
+    return article;
 }
 
 /**
@@ -256,7 +266,7 @@ function loadPostToEdit(id) {
 function savePost() {
 
     // Check if hiddenId-Field is not empty.
-    if ($("#entryId").val() != "") {
+    if ($("#entryId").val() !== "") {
 
         // An existing post was edited. Now remove the post first from the database.
         deletePost($("#entryId").val());
@@ -266,7 +276,7 @@ function savePost() {
     addPost();
 
     // Load all Posts from the database
-    getPosts()
+    getPosts();
 }
 
 
@@ -393,7 +403,7 @@ $(window).load(function () {
     $("#btnSave").click(function () {
         savePost();
         clearForm();
-    })
+    });
 
     // Register a Clickevent on elements with the class close to display a cross on the images to remove the images form the system
     $('body').on('click','.close', function() {
