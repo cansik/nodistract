@@ -2,9 +2,11 @@ var apiBaseUrl = 'http://easyguet.ch/nodistract/public/api/';
 
 var redirectUrl = 'https://easyguet.ch/nodistract/public/';
 
+var spellChecker = 'https://bingapis.azure-api.net/api/v5/spellcheck?Spell';
+
+var images = [];
 
 var token = "";
-
 
 function login(username,password){
 
@@ -46,32 +48,71 @@ function getPosts(){
     });
 }
 
-function addPost(){
+function getImages(){
+    $("#images").html("");
+    $("#images").append("<ul>");
+    $.get( apiBaseUrl + "image?token="+ localStorage.token, function( data ) {
+        jQuery.each(data["images"], function() {
+            $("#images").append(generateImage(this));
+        });
+    });
+    $("#images").append("</ul>");
+}
+
+
+
+function addPost() {
+
     var body = {
-        "title":$("#title").val(),
+        "title": $("#title").val(),
         "path": $("#title").val().split(' ').join('-').toLowerCase(),
-        "content":$("#content").val(),
-        "published":($("#publishEntry").is(":checked") ? 1 : 0),
-        "author_id":1
+        "content": $("#content").val(),
+        "published": ($("#publishEntry").is(":checked") ? 1 : 0),
+        "author_id": 1
     };
 
     $.ajax({
         type: 'POST',
-        url: apiBaseUrl + "post?token="+ localStorage.token,
-        data:JSON.stringify(body),
-        dataType:'json',
-        success: function(data) { console.log("ADd completed");},
-        async:false
+        url: apiBaseUrl + "post?token=" + localStorage.token,
+        data: JSON.stringify(body),
+        dataType: 'json',
+        success: function (data) {
+            console.log("Add completed");
+        },
+        async: false
     });
 }
 
-function deletePost(id){
+function deletePost(id) {
     $.ajax({
         type: 'DELETE',
-        url: apiBaseUrl + 'post/'+id+'?token='+localStorage.token,
-        success: function() { console.log("Delete completed");},
-        async:false
+        url: apiBaseUrl + 'post/' + id + '?token=' + localStorage.token,
+        success: function () {
+            console.log("Delete completed");
+        },
+        async: false
     });
+
+}
+
+function deleteImage(id) {
+    $.ajax({
+        type: 'DELETE',
+        url: apiBaseUrl + 'image/' + id + '?token=' + localStorage.token,
+        success: function () {
+            console.log("Delete completed");
+        },
+        async: false
+    });
+}
+
+function generateImage(image) {
+
+    var label = "<li><input type='checkbox' id='cb_"+image["id"]+"' /><label for='cb_"+image["id"]+"'><img src='" + image["data"] + "' title='" + image["title"] + "' id='"+image["id"]+"'/><span class='close'></span></label></li>";
+   // var imageTag = "<img src='" + image["data"] + "' title='" + image["title"] + "' />";
+    //var linkDelete = "<span class='icon icon-remove delete'>Delete</span>";
+    //var container = "<div class='image' id='image_" + image["id"] + "'>" + imageTag + linkDelete + "</div>";
+    return label;
 }
 
 function generatePost(post) {
@@ -79,26 +120,26 @@ function generatePost(post) {
     var id = post["id"];
     var content = post["content"];
     var published = post["published"];
-    var row = "<div class='row' id='entry_"+id+"'>" +
-        "<span class='icon icon-pencil' onclick='loadPostToEdit("+id+")'></span>" +
-        "<span class='icon icon-remove' onclick='deletePost("+id+");getPosts();'></span> " +
+    var row = "<div class='row' id='entry_" + id + "'>" +
+        "<span class='icon icon-pencil' onclick='loadPostToEdit(" + id + ")'></span>" +
+        "<span class='icon icon-remove' onclick='deletePost(" + id + ");getPosts();'></span> " +
         (published ? "<span class='icon icon-share'></span> " : "<span class='icon icon-lock' '></span> ") +
-        "<div class='col-md-3 col-md-offset-3'><span class='title'>"+title+"</span></div>" +
-        "<div class='col-md-3 col-md-offset-3'><span class='content'>"+content+"</span></div>" +
-        "<input type='hidden' value='"+published+"' name='published' />"+
+        "<div class='col-md-3 col-md-offset-3'><span class='title'>" + title + "</span></div>" +
+        "<div class='col-md-3 col-md-offset-3'><span class='content'>" + content + "</span></div>" +
+        "<input type='hidden' value='" + published + "' name='published' />" +
         "</div>" +
         "<hr />";
-    
+
     return row;
 }
 
-function generateLoginForm(){
+function generateLoginForm() {
     var loginBox = "<div class='modal-dialog'>" +
         "<div class='modal-content'>" +
         "<div class='modal-header'> " +
         "<button type='button' class='close' data-dismiss='modal' aria-label='Close'><span aria-hidden='true'>&times;</span></button>" +
         " <h4 class='modal-title'>Login</h4> " +
-        "<span id='errorMessage'></span>"    +
+        "<span id='errorMessage'></span>" +
         "</div> " +
         "<div class='modal-body'> " +
         " <input type=text' id='username' placeholder='username' />" +
@@ -114,17 +155,17 @@ function generateLoginForm(){
     return loginBox;
 }
 
-function loadPostToEdit(id){
+function loadPostToEdit(id) {
 
-    var title = $("#entry_"+id +" span.title").html();
+    var title = $("#entry_" + id + " span.title").html();
     console.log(title);
-    var content = $("#entry_"+id +" span.content").html();
+    var content = $("#entry_" + id + " span.content").html();
 
-    var pub = $("#entry_"+id +" input")[0];
+    var pub = $("#entry_" + id + " input")[0];
     $("#publishEntry").prop('checked', false);
 
-    if($(pub).val() == "true"){
-      $("#publishEntry").prop('checked', true);
+    if ($(pub).val() == "true") {
+        $("#publishEntry").prop('checked', true);
     }
 
     $("#title").val(title);
@@ -132,49 +173,98 @@ function loadPostToEdit(id){
     $("#entryId").val(id);
 }
 
-function savePost(){
-    if($("#entryId").val() != ""){
+function savePost() {
+    if ($("#entryId").val() != "") {
         deletePost($("#entryId").val());
     }
     addPost();
-    getPosts();
+    getPosts()
 }
 
-
-
-$(window).load(function() {
+$(window).load(function () {
 
     $("#form").hide();
 
     if (localStorage.token) {
         $("#form").show();
         getPosts();
-    }  else {
+        getImages();
+    } else {
         $("#loginDialog").html(generateLoginForm());
         $("#loginDialog").modal("show");
     }
 
     $('body').on('click', '#loginBtn', function () {
-        var res = login($("#username").val(),$("#password").val());
+        var res = login($("#username").val(), $("#password").val());
         if (localStorage.token) {
             $('#loginDialog').modal('hide');
             $("#loginDialog").html("");
             $("#form").show();
             getPosts();
+            getImages();
         } else {
             $("#loginDialog").modal("show");
             $("#errorMessage").html(res);
         }
     });
 
-    $("#btnClear").click(function(){
+    $("#btnClear").click(function () {
         $("#title").val("");
         $("#content").val("");
         $("#entryId").val("");
         $("#publishEntry").attr("checked", false);
     });
 
-    $("#btnSave").click(function(){
+    $("#btnSave").click(function () {
         savePost();
     })
+
+
+    $('body').on('click','.close', function() {
+        var img = $(this).parent().find("img")[0];
+        deleteImage($(img).attr("id"));
+        getImages();
+    });
 });
+
+function postImage(obj) {
+    console.log(JSON.stringify(obj));
+    $.ajax({
+        type: 'POST',
+        url: apiBaseUrl + "image?token=" + localStorage.token,
+        data: JSON.stringify(obj),
+        dataType: 'json',
+        success: function (data) {
+            console.log(data);
+        },
+        async: false
+    });
+}
+
+function previewFiles() {
+
+    var files = document.querySelector('input[type=file]').files;
+
+    function readAndPreview(file) {
+
+        // Make sure `file.name` matches our extensions criteria
+        if (/\.(jpe?g|png|gif)$/i.test(file.name)) {
+            var reader = new FileReader();
+
+            var reader = new FileReader();
+            reader.onload = function (event) {
+                var object = {"title": file.name, "data": event.target.result};
+                console.log(object);
+                //object.filename = file.name;
+                //  object.data = event.target.result.split(',')[1];;
+                postImage(object);
+            };
+            reader.readAsDataURL(file);
+        }
+
+    }
+
+    if (files) {
+        [].forEach.call(files, readAndPreview);
+    }
+}
