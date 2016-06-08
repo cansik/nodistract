@@ -95,6 +95,19 @@ function deletePost(id) {
 
 }
 
+function postImage(obj) {
+    $.ajax({
+        type: 'POST',
+        url: apiBaseUrl + "image?token=" + localStorage.token,
+        data: JSON.stringify(obj),
+        dataType: 'json',
+        success: function (data) {
+            console.log("Imageupload completed");
+        },
+        async: false
+    });
+}
+
 function deleteImage(id) {
     $.ajax({
         type: 'DELETE',
@@ -108,10 +121,7 @@ function deleteImage(id) {
 
 function generateImage(image) {
 
-    var label = "<li><input type='checkbox' id='cb_"+image["id"]+"' /><label for='cb_"+image["id"]+"'><img src='" + image["data"] + "' title='" + image["title"] + "' id='"+image["id"]+"'/><span class='close'></span></label></li>";
-   // var imageTag = "<img src='" + image["data"] + "' title='" + image["title"] + "' />";
-    //var linkDelete = "<span class='icon icon-remove delete'>Delete</span>";
-    //var container = "<div class='image' id='image_" + image["id"] + "'>" + imageTag + linkDelete + "</div>";
+    var label = "<li><input type='checkbox' id='cb_"+image["id"]+"' /><label for='cb_"+image["id"]+"'><img class='blogImage' src='" + image["data"] + "' title='" + image["title"] + "' id='"+image["id"]+"'/><span class='close'></span></label></li>";
     return label;
 }
 
@@ -180,6 +190,38 @@ function savePost() {
     getPosts()
 }
 
+function clearForm(){
+    $("#title").val("");
+    $("#content").val("");
+    $("#entryId").val("");
+    $("#publishEntry").attr("checked", false);
+}
+
+function previewFiles() {
+
+    var files = document.querySelector('input[type=file]').files;
+
+    function readAndPreview(file) {
+
+        // Make sure `file.name` matches our extensions criteria
+        if (/\.(jpe?g|png|gif)$/i.test(file.name)) {
+            var reader = new FileReader();
+
+            var reader = new FileReader();
+            reader.onload = function (event) {
+                var object = {"title": file.name, "data": event.target.result};
+                postImage(object);
+            };
+            reader.readAsDataURL(file);
+        }
+
+    }
+
+    if (files) {
+        [].forEach.call(files, readAndPreview);
+    }
+}
+
 $(window).load(function () {
 
     $("#form").hide();
@@ -207,17 +249,20 @@ $(window).load(function () {
         }
     });
 
+    $('body').on('click', '.blogImage', function () {
+        var id = $(this).attr("id");
+        var imageUrl = "!["+ $(this).attr("title")+"]("+apiBaseUrl+"image/"+id+")";
+        $("#content").val( $("#content").val() + imageUrl);
+    });
+
     $("#btnClear").click(function () {
-        $("#title").val("");
-        $("#content").val("");
-        $("#entryId").val("");
-        $("#publishEntry").attr("checked", false);
+        clearForm();
     });
 
     $("#btnSave").click(function () {
         savePost();
+        clearForm();
     })
-
 
     $('body').on('click','.close', function() {
         var img = $(this).parent().find("img")[0];
@@ -225,41 +270,3 @@ $(window).load(function () {
         getImages();
     });
 });
-
-function postImage(obj) {
-    $.ajax({
-        type: 'POST',
-        url: apiBaseUrl + "image?token=" + localStorage.token,
-        data: JSON.stringify(obj),
-        dataType: 'json',
-        success: function (data) {
-            console.log("Imageupload completed");
-        },
-        async: false
-    });
-}
-
-function previewFiles() {
-
-    var files = document.querySelector('input[type=file]').files;
-
-    function readAndPreview(file) {
-
-        // Make sure `file.name` matches our extensions criteria
-        if (/\.(jpe?g|png|gif)$/i.test(file.name)) {
-            var reader = new FileReader();
-
-            var reader = new FileReader();
-            reader.onload = function (event) {
-                var object = {"title": file.name, "data": event.target.result};
-                postImage(object);
-            };
-            reader.readAsDataURL(file);
-        }
-
-    }
-
-    if (files) {
-        [].forEach.call(files, readAndPreview);
-    }
-}
