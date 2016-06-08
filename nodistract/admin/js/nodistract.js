@@ -158,7 +158,6 @@ function generateLoginForm() {
 function loadPostToEdit(id) {
 
     var title = $("#entry_" + id + " span.title").html();
-    console.log(title);
     var content = $("#entry_" + id + " span.content").html();
 
     var pub = $("#entry_" + id + " input")[0];
@@ -228,14 +227,13 @@ $(window).load(function () {
 });
 
 function postImage(obj) {
-    console.log(JSON.stringify(obj));
     $.ajax({
         type: 'POST',
         url: apiBaseUrl + "image?token=" + localStorage.token,
         data: JSON.stringify(obj),
         dataType: 'json',
         success: function (data) {
-            console.log(data);
+            console.log("Imageupload completed");
         },
         async: false
     });
@@ -254,9 +252,6 @@ function previewFiles() {
             var reader = new FileReader();
             reader.onload = function (event) {
                 var object = {"title": file.name, "data": event.target.result};
-                console.log(object);
-                //object.filename = file.name;
-                //  object.data = event.target.result.split(',')[1];;
                 postImage(object);
             };
             reader.readAsDataURL(file);
