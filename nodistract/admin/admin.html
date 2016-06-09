@@ -7,8 +7,10 @@
         <title>Nodistract</title>
         <link rel="stylesheet" href="bootstrap/css/bootstrap.min.css">
         <link rel="stylesheet" href="css/admin.css">
-        <script type="text/javascript" src="js/jquery.js"></script>
+        <script type="text/javascript" src="js/libs/jquery.js"></script>
         <script type="text/javascript" src="bootstrap/js/bootstrap.min.js"></script>
+        <script type="text/javascript" src="js/libs/moment.js"></script>
+        <script type="text/javascript" src="js/nodistractHeader.js"></script>
     </head>
     <body>
         <span class="icon icon-off" onclick="logout()"></span>
@@ -50,8 +52,10 @@
         <hr />
 
         <section>
-            <input id="browseFiles" type="file" onchange="previewFiles()" multiple>
+            <input id="browseFiles" type="file" onchange="uploadFiles()" multiple>
             <div id="images" class="container">
+                <ul>
+                </ul>
             </div>
         </section>
 
@@ -69,8 +73,8 @@
         </section>
 
         <footer>
-            <script type="text/javascript" src="js/crypto.js"></script>
-            <script type="text/javascript" src="js/nodistractHeader.js"></script>
+            <script type="text/javascript" src="js/libs/crypto.js"></script>
+            <script type="text/javascript" src="js/nodistractCheckSpell.js"></script>
             <script type="text/javascript" src="js/nodistractPosts.js"></script>
             <script type="text/javascript" src="js/nodistractImages.js"></script>
             <script type="text/javascript" src="js/nodistractMain.js"></script>
