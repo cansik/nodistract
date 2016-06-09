@@ -165,7 +165,7 @@ $(window).load(function () {
         // Remove the image form the system by call deleteImage with passing the image-Id as parameter
         deleteImage($(img).attr("id"));
 
-        // Reload all existing images
-        getImages();
+        // Remove the image from the DOM with all associated elements
+        $(this).closest("li").remove();
     });
 });

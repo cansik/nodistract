@@ -4,43 +4,56 @@
 function getImages(){
 
     // Clear Container of images to load all images into it
-    $("#images").html("");
-    $("#images").append("<ul>");
-    $.get( apiBaseUrl + "image?token="+ localStorage.token, function( data ) {
-        jQuery.each(data.images, function() {
+    $("#images>ul").html("");
 
-            // Generate a Container for each image and append it into the main-Image-Container
-            $("#images").append(generateImage(this));
-        });
+    // Variable to build the html to display the images
+    var htmlContent = "";
+
+    $.ajax({
+        type: 'GET',
+        url: apiBaseUrl + "image?token=" + localStorage.token,
+        success: function (data) {
+            jQuery.each(data.images, function() {
+
+                // Generate a Container for each image and append it to the htmlContent Variable
+                htmlContent += generateImage(this);
+            });
+        },
+        async: false
     });
-    $("#images").append("</ul>");
+
+
+    $("#images>ul").html(htmlContent);
 }
 
 /**
  * Function to upload a image into the system.
  * @param obj
  */
-function postImage(obj) {
+function postImage(imageObj) {
+    var obj;
     $.ajax({
         type: 'POST',
         url: apiBaseUrl + "image?token=" + localStorage.token,
-        data: JSON.stringify(obj),
+        data: JSON.stringify(imageObj),
         dataType: 'json',
         success: function (data) {
+            obj = data;
             console.log("Imageupload completed");
         },
         async: false
     });
+    return obj;
 }
 
 /**
  * Function to delete a post with a certain id
  * @param id Id of the Image
  */
-function deleteImage(id) {
+function deleteImage(imageId) {
     $.ajax({
         type: 'DELETE',
-        url: apiBaseUrl + 'image/' + id + '?token=' + localStorage.token,
+        url: apiBaseUrl + 'image/' + imageId + '?token=' + localStorage.token,
         success: function () {
             console.log("Delete completed");
         },
@@ -62,36 +75,49 @@ function generateImage(image) {
 /**
  * Function to choose Images and upload them into the database
  */
-function previewFiles() {
+function uploadFiles(){
 
     // Get all files from the Uploadfield
     var files = document.querySelector('input[type=file]').files;
 
-    // Inside-Function to read a choosen file
-    function readAndPreview(file) {
-
-        // Make sure `file.name` matches our extensions criteria
-        if (/\.(jpe?g|png|gif)$/i.test(file.name)) {
-
-            // Create a FileReader to read a single file
-            var reader = new FileReader();
-            reader.onload = function (event) {
-
-                // read attributes from file and store them into an object
-                var object = {"title": file.name, "data": event.target.result};
-
-                // pass Object to save the image
-                postImage(object);
-            };
-
-            // read the file
-            reader.readAsDataURL(file);
-        }
-
-    }
-
     if (files) {
         // Call our inside-Function for every choosen file
-        [].forEach.call(files, readAndPreview);
+        jQuery.each(files, function() {
+            readAndPreview(this);
+        });
+    }
+}
+
+/**
+ * Function to read a choosen file, upload it into the database and display it within a tag on the website
+ * @param file image
+ */
+function readAndPreview(file) {
+
+    // Make sure `file.name` matches our extensions criteria
+    if (/\.(jpe?g|png|gif)$/i.test(file.name)) {
+
+        // Create a FileReader to read a single file
+        var reader = new FileReader();
+       // reader.onload = function (event) {
+        reader.addEventListener("load", function () {
+
+
+            // read attributes from file and store them into an object
+            var object = {"title": file.name, "data": this.result};
+
+            // pass Object to save the image
+            var imageProperties = postImage(object);
+
+            // generate imageObj with all Parameters
+            var imageObj = {"title":file.name,"id":imageProperties.id,"data":this.result};
+
+            // add new generated Imagetag to the container to display the image in the selection
+            $("#images>ul").append(generateImage(imageObj));
+
+        },false);
+
+        // read the file
+        reader.readAsDataURL(file);
     }
 }

@@ -22,7 +22,7 @@ function getPosts(){
 function addPost() {
 
     // Object which contains the content of a post
-    var body = {
+    var postBody = {
         "title": $("#title").val(),
         "path": $("#title").val().split(' ').join('-').toLowerCase(),
         "content": $("#content").val(),
@@ -34,7 +34,7 @@ function addPost() {
     $.ajax({
         type: 'POST',
         url: apiBaseUrl + "post?token=" + localStorage.token,
-        data: JSON.stringify(body),
+        data: JSON.stringify(postBody),
         dataType: 'json',
         success: function (data) {
             console.log("Add completed");
@@ -47,10 +47,10 @@ function addPost() {
  * Function to delete a post with a certain id
  * @param id Id of the Post
  */
-function deletePost(id) {
+function deletePost(postId) {
     $.ajax({
         type: 'DELETE',
-        url: apiBaseUrl + 'post/' + id + '?token=' + localStorage.token,
+        url: apiBaseUrl + 'post/' + postId + '?token=' + localStorage.token,
         success: function () {
             console.log("Delete completed");
         },
@@ -60,18 +60,31 @@ function deletePost(id) {
 }
 
 /**
+ * Function to convert a date into the format HH:MM DD.MM.YYYY
+ * @param date
+ * @returns {string} formated date
+ */
+function returnFullDate(date){
+    // Use momentJs to parse date and make easy access on datevalues
+    var publishedDate = moment(date);
+
+    // Return date as HH:MM DD.MM.YYYY
+    return publishedDate.hours() + ":"+ publishedDate.minutes() + " "+publishedDate.day()+"."+publishedDate.month()+"."+publishedDate.year();
+}
+
+/**
  * Function the generate HTML to display a post on the page
  * @param post Post-entry
  * @returns {string} HTML which displays a post
  */
 function generatePost(post) {
-    var published_date = post.publish_date.date;
     var title = post.title;
     var id = post.id;
     var content = post.content;
+
     var published = post.published;
     var header = "<header><span class='icon icon-pencil' onclick='loadPostToEdit(" + id + ")'></span><span class='icon icon-remove' onclick='deletePost(" + id + ");getPosts();'></span>"+(published ? "<span class='icon icon-share'></span> " : "<span class='icon icon-lock' '></span> ")+"</header>";
-    var contentPart = "<p><time>"+ published_date +"</time>|<span class='title'>" +title + "</span></p><details><summary>Extend Content</summary><p><span class='content'>" + content + "</span><input type='hidden' value='" + published + "' name='published' /></p></details>";
+    var contentPart = "<p><time>"+ returnFullDate(post.publish_date.date) +"</time> | <span class='title'>" +title + "</span></p><details><summary>Extend Content</summary><p><span class='content'>" + content + "</span><input type='hidden' value='" + published + "' name='published' /></p></details>";
     var article = "<article id='entry_"+id+"'>" + header + contentPart + "</article>";
     return article;
 }
@@ -80,16 +93,16 @@ function generatePost(post) {
  * Function to load a certain post into the form for editing the post
  * @param id Postid
  */
-function loadPostToEdit(id) {
+function loadPostToEdit(postId) {
 
     // get title of Post
-    var title = $("#entry_" + id + " span.title").html();
+    var title = $("#entry_" + postId + " span.title").html();
 
     // get Content of Post
-    var content = $("#entry_" + id + " span.content").html();
+    var content = $("#entry_" + postId + " span.content").html();
 
     // get Publification of Post
-    var pub = $("#entry_" + id + " input")[0];
+    var pub = $("#entry_" + postId + " input")[0];
     $("#publishEntry").prop('checked', false);
 
     if ($(pub).val() == "true") {
@@ -100,7 +113,7 @@ function loadPostToEdit(id) {
     // Set values from post into the form
     $("#title").val(title);
     $("#content").val(content);
-    $("#entryId").val(id);
+    $("#entryId").val(postId);
 }
 
 /**
