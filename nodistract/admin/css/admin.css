@@ -1,4 +1,33 @@
-ul {
+ .login {
+	 margin-top: 50px;
+	 display: none;
+ }
+ 
+ .main-wrapper {
+	 display: none;
+	 
+ }
+ 
+ .breadcrumb {
+	 background: white;
+ }
+ 
+ .glyphicon {
+	 font-size: 18px;	 
+ }
+ 
+ .checkbox {
+	 margin-left: 20px;
+	 margin-top: 4px ! important;
+ }
+ 
+ .alert {
+	 display: none;
+	 margin-top: 20px;
+	 
+ }
+ 
+/* ul {
     list-style-type: none;
 }
 
@@ -68,4 +97,4 @@ label img {
     top: 0;
     right: 0;
     cursor: pointer;
-}
+} */

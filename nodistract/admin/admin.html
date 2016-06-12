@@ -1,83 +1,152 @@
 <!DOCTYPE html>
 <html lang="en">
     <head>
-        <meta charset="utf-8">
+		<meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <title>Nodistract</title>
-        <link rel="stylesheet" href="bootstrap/css/bootstrap.min.css">
-        <link rel="stylesheet" href="css/admin.css">
-        <script type="text/javascript" src="js/libs/jquery.js"></script>
-        <script type="text/javascript" src="bootstrap/js/bootstrap.min.js"></script>
-        <script type="text/javascript" src="js/libs/moment.js"></script>
-        <script type="text/javascript" src="js/nodistractHeader.js"></script>
+        <meta name="viewport" content="width=device-width, initial-scale=1">                     
+        <meta name="description" content="A simple blog CMS for highlighting markdown in your blog posts.">
+        <meta name="author" content="Julian Ziörjen, Florian Brugisser, Ilija Tipura">
+
+        <link rel="shortcut icon" href="images/favicon_1.ico">
+        <title>Nodistract</title>        
+
+        <link href="bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css">
+		<link href="css/admin.css" rel="stylesheet" type="text/css">      	
+		
+		<script type="text/javascript" src="js/includes.js"></script>        
     </head>
-    <body>
-        <span class="icon icon-off" onclick="logout()"></span>
-        <section>
-            <div class="container" id="form">
-                <div class="container">
-                    <div class="starter-template">
-                        <form class="form-horizontal">
-                            <div class="form-group">
-                                <label for="title" class="col-sm-2 control-label">Title</label>
-                                <div class="col-sm-10">
-                                    <input type="text" class="form-control" id="title" placeholder="title">
-                                    <input type="hidden" class="form-control" id="entryId">
-                                </div>
+    <body class="fixed-left">
+		<div class="container">
+			<div id="alertError" class="alert alert-danger" role="alert">
+				<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+				<span class="sr-only">Error:</span>
+					Please check your credentials and try again.
+			</div>
+		</div>
+        <!-- Begin page -->
+        <div id="wrapper" class="main-wrapper">				
+			<nav class="navbar navbar-default">
+				<div class="container-fluid">
+					<!-- Brand and toggle get grouped for better mobile display -->
+					<div class="navbar-header">
+					  <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+						<span class="sr-only">Toggle navigation</span>
+						<span class="icon-bar"></span>
+						<span class="icon-bar"></span>
+						<span class="icon-bar"></span>
+					  </button>
+					  <a class="navbar-brand" href="admin.html">Nodistract</a>
+					</div>
+
+					<!-- Collect the nav links, forms, and other content for toggling -->
+					<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+					  <ul class="nav navbar-nav">
+						<li class="active"><a href="#">Dashboard</a></li>											
+					  </ul>					  
+					  <ul class="nav navbar-nav navbar-right">						
+						<li class="dropdown">
+						  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Settings <span class="caret"></span></a>
+						  <ul class="dropdown-menu">
+							<li><a href="javascript:logout()">Logout</a></li>													
+						  </ul>
+						</li>
+					  </ul>
+					</div><!-- /.navbar-collapse -->
+				  </div><!-- /.container-fluid -->
+			</nav>          
+            
+            <div class="content-page">
+                <!-- Start content -->
+                <div class="content">
+                    <div class="container">                     
+						<div class="row">
+							<div class="col-sm-12">
+                                <div class="panel panel-primary">
+                                    <div class="panel-heading"><h3 class="panel-title">Add post</h3></div>
+                                    <div class="panel-body">
+                                        <div class="form">
+                                            <form class="cmxform form-horizontal tasi-form" id="addPostForm" method="get" action="#">
+                                                <div class="form-group">
+                                                    <label for="title" class="control-label col-lg-2">Title</label>
+                                                    <div class="col-lg-10">
+                                                        <input class="form-control" id="title" name="name" type="text">
+														<input type="hidden" class="form-control" id="entryId">
+                                                    </div>
+                                                </div>                                              
+                                                <div class="form-group">
+                                                    <label for="content" class="control-label col-lg-2">Content</label>
+                                                    <div class="col-lg-10">
+                                                        <textarea class="form-control" id="content" name="comment" ></textarea>
+                                                    </div>
+                                                </div>		
+												<div class="form-group">													
+													<label for="publishEntry" class="control-label col-lg-2">
+														 Publish
+													</label>
+													<div class="col-lg-10">
+														<input type="checkbox" class="checkbox" id="publishEntry">													
+													</div>																							
+												</div>																							
+                                                <div class="form-group">
+                                                    <div class="col-lg-offset-2 col-lg-10">
+                                                        <button class="btn btn-primary" type="submit">Save</button>
+                                                        <button class="btn btn-default" type="button">Cancel</button>
+                                                    </div>
+                                                </div>
+                                            </form>
+                                        </div> <!-- .form -->
+                                    </div> <!-- panel-body -->
+                                </div> <!-- panel -->
                             </div>
-                            <div class="form-group">
-                                <label for="content" class="col-sm-2 control-label">Content</label>
-                                <div class="col-sm-10">
-                                   <textarea rows="3" id="content"></textarea>
-                                </div>
-                            </div>
-                            <div class="checkbox">
-                                <label>
-                                    <input type="checkbox" id="publishEntry"> Publish
-                                </label>
-                            </div>
-                            <div class="form-group">
-                                <div class="col-sm-offset-2 col-sm-10">
-                                    <button type="button" class="btn" id="btnClear">Clear</button>
-                                    <button type="button" class="btn btn-default" id="btnSave">Save</button>
-                                </div>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            </div>
-        </section>
+						</div>						
+						<div id="postWrapper" >
+                            
+						</div>
+                    </div> <!-- container -->                               
+                </div> <!-- content -->
 
-        <hr />
-
-        <section>
-            <input id="browseFiles" type="file" onchange="uploadFiles()" multiple>
-            <div id="images" class="container">
-                <ul>
-                </ul>
-            </div>
-        </section>
-
-        <hr />
-
-        <section>
-            <div id="posts" class="container">
-            </div>
-        </section>
-
-
-        <section>
-            <div class='modal fade' tabindex='-1' role='dialog' id="loginDialog">
-            </div>
-        </section>
-
-        <footer>
-            <script type="text/javascript" src="js/libs/crypto.js"></script>
-            <script type="text/javascript" src="js/nodistractCheckSpell.js"></script>
-            <script type="text/javascript" src="js/nodistractPosts.js"></script>
-            <script type="text/javascript" src="js/nodistractImages.js"></script>
-            <script type="text/javascript" src="js/nodistractMain.js"></script>
-        </footer>
+                <footer class="footer text-right">
+                    2016 © Nodistract.
+                </footer>
+            </div>						           
+        </div><!-- END wrapper -->
+		
+		<div id="loginWrapper" class="login">
+			<div class="row">
+				<!-- Basic example -->
+				<div class="col-md-6 col-md-push-3">
+					<div class="panel panel-default">
+						<div class="panel-heading"><h3 class="panel-title">Login</h3></div>
+						<div class="panel-body">
+							<form id="loginForm" role="form">
+								<div class="form-group">
+									<label>Username</label>
+									<input type="text" class="form-control" id="username" placeholder="Username">
+								</div>
+								<div class="form-group">
+									<label>Password</label>
+									<input type="password" class="form-control" id="password" placeholder="Password">
+								</div>								
+								<button type="submit" class="btn btn-primary waves-effect waves-light">Sign in</button>
+							</form>
+						</div><!-- panel-body -->
+					</div> <!-- panel -->
+				</div> <!-- col-->
+			</div>
+		</div>		
+         
+        <!-- jQuery  -->
+        <script type="text/javascript" src="js/libs/jquery.js"></script>
+        <!-- bootstrap  -->
+		<script type="text/javascript" src="bootstrap/js/bootstrap.min.js"></script>       
+		<!-- moment js  -->
+        <script type="text/javascript" src="js/libs/moment.js"></script>
+		<!-- crypto js  -->
+        <script type="text/javascript" src="js/libs/crypto.js"></script>						               
+		<!-- custom js -->		
+        <script type="text/javascript" src="js/spellcheck.js"></script>
+        <script type="text/javascript" src="js/postcontroller.js"></script>
+        <script type="text/javascript" src="js/imagecontroller.js"></script>
+        <script type="text/javascript" src="js/main.js"></script>                                              
     </body>
 </html>

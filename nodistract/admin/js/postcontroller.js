@@ -2,16 +2,14 @@
  * Function to load all Posts of a certain user identified by the token in the localstorage
  */
 function getPosts(){
-
     // Clear Container for the posts before loading posts into it
-    $("#posts").html("");
+    $("#postWrapper").html("");
 
     $.get( apiBaseUrl + "post?token="+ localStorage.token, function( data ) {
         jQuery.each(data.posts, function() {
-
             // Generate a Container for each post and append it into the main-Post-Container
-            $("#posts").append(generatePost(this));
-            $("#posts").append("<br />");
+            $("#postWrapper").append(generatePost(this));
+            // $("#posts").append("<br />");
         });
     });
 }
@@ -120,12 +118,22 @@ function generatePost(post) {
     var title = post.title;
     var id = post.id;
     var content = post.content;
-
     var published = post.published;
+	
+	var postDiv = '<div class="col-md-8 col-md-push-2">'
+				+ '<div class="panel panel-default panel-border">'
+						+'<div class="panel-heading">'
+							+'<h3 class="panel-title">' + title + '</h3>'							
+						+'</div></div>'
+						+'<div class="panel-body">'
+							+'<p>' + content + '</p>' 
+						+'</div>'					
+				+'</div></div>'
     var header = "<header><span class='icon icon-pencil' onclick='loadPostToEdit(" + id + ")'></span><span class='icon icon-remove' onclick='deletePost(" + id + ");getPosts();'></span>"+(published ? "<span class='icon icon-share'></span> " : "<span class='icon icon-lock' '></span> ")+"</header>";
     var contentPart = "<p><time>"+ returnFullDate(post.publish_date.date) +"</time> | <span class='title'>" +title + "</span></p><details><summary>Extend Content</summary><p><span class='content'>" + content + "</span><input type='hidden' value='" + published + "' name='published' /></p></details>";
     var article = "<article id='entry_"+id+"'>" + header + contentPart + "</article>";
-    return article;
+    
+	return postDiv;
 }
 
 /**
