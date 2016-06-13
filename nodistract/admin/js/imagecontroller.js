@@ -38,8 +38,7 @@ function postImage(imageObj) {
         data: JSON.stringify(imageObj),
         dataType: 'json',
         success: function (data) {
-            obj = data;
-            console.log("Imageupload completed");
+            obj = data;            
         },
         async: false
     });
@@ -53,10 +52,7 @@ function postImage(imageObj) {
 function deleteImage(imageId) {
     $.ajax({
         type: 'DELETE',
-        url: apiBaseUrl + 'image/' + imageId + '?token=' + localStorage.token,
-        success: function () {
-            console.log("Delete completed");
-        },
+        url: apiBaseUrl + 'image/' + imageId + '?token=' + localStorage.token,        
         async: false
     });
 }
@@ -68,6 +64,7 @@ function deleteImage(imageId) {
  */
 function generateImage(image) {
     var imageId = image.id;
+	console.log(image.data);
     var label = "<li><article><label for='cb_"+imageId+"'><img class='blogImage' src='" + image.data + "' title='" + image.title + "' id='"+imageId+"'/><span class='close'></span></label></article></li>";
     return label;
 }
@@ -101,8 +98,7 @@ function readAndPreview(file) {
        // reader.onload = function (event) {
         reader.addEventListener("load", function () {
             // read attributes from file and store them into an object
-            var object = {"title": file.name, "data": this.result};
-
+            var object = {"title": file.name, "data": this.result};			
             // pass Object to save the image
             var imageProperties = postImage(object);
 

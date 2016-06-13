@@ -8,8 +8,7 @@ function getPosts(){
     $.get( apiBaseUrl + "post?token="+ localStorage.token, function( data ) {
         jQuery.each(data.posts, function() {
             // Generate a Container for each post and append it into the main-Post-Container
-            $("#postWrapper").append(generatePost(this));
-            // $("#posts").append("<br />");
+            $("#postWrapper").append(generatePost(this));            
         });
     });
 }
@@ -89,7 +88,8 @@ function deletePost(postId) {
         type: 'DELETE',
         url: apiBaseUrl + 'post/' + postId + '?token=' + localStorage.token,
         success: function () {
-            console.log("Delete completed");
+            // get title of Post
+			$("#entry_" + postId).remove();;
         },
         async: false
     });
@@ -115,25 +115,10 @@ function returnFullDate(date){
  * @returns {string} HTML which displays a post
  */
 function generatePost(post) {
-    var title = post.title;
-    var id = post.id;
-    var content = post.content;
-    var published = post.published;
-	
-	var postDiv = '<div class="col-md-8 col-md-push-2">'
-				+ '<div class="panel panel-default panel-border">'
-						+'<div class="panel-heading">'
-							+'<h3 class="panel-title">' + title + '</h3>'							
-						+'</div></div>'
-						+'<div class="panel-body">'
-							+'<p>' + content + '</p>' 
-						+'</div>'					
-				+'</div></div>'
-    var header = "<header><span class='icon icon-pencil' onclick='loadPostToEdit(" + id + ")'></span><span class='icon icon-remove' onclick='deletePost(" + id + ");getPosts();'></span>"+(published ? "<span class='icon icon-share'></span> " : "<span class='icon icon-lock' '></span> ")+"</header>";
-    var contentPart = "<p><time>"+ returnFullDate(post.publish_date.date) +"</time> | <span class='title'>" +title + "</span></p><details><summary>Extend Content</summary><p><span class='content'>" + content + "</span><input type='hidden' value='" + published + "' name='published' /></p></details>";
-    var article = "<article id='entry_"+id+"'>" + header + contentPart + "</article>";
-    
-	return postDiv;
+    	    	    
+	var node = '<a class="list-group-item"><h4 class="list-group-item-heading">' + post.title + '<span class="glyphicon glyphicon-remove" onclick="deletePost('+ post.id+');" ></span><span class="glyphicon glyphicon-pencil" onclick="loadPostToEdit(' + post.id + ')"></h4><p class="list-group-item-text">' + post.content + '</p><input type="hidden" value="' + post.published + '" name="published"/></a>';	   	
+    var article = "<article id='entry_"+post.id+"'>" + node + "</article>";
+	return article;
 }
 
 /**
@@ -143,10 +128,10 @@ function generatePost(post) {
 function loadPostToEdit(postId) {
 
     // get title of Post
-    var title = $("#entry_" + postId + " span.title").html();
+    var title = $("#entry_" + postId + " h4.list-group-item-heading").html();
 
     // get Content of Post
-    var content = $("#entry_" + postId + " span.content").html();
+    var content = $("#entry_" + postId + " p.list-group-item-text").html();
 
     // get Publification of Post
     var pub = $("#entry_" + postId + " input")[0];
@@ -161,6 +146,7 @@ function loadPostToEdit(postId) {
     $("#title").val(title);
     $("#content").val(content);
     $("#entryId").val(postId);
+	$("html, body").animate({ scrollTop: 0 }, 600);
 }
 
 /**

@@ -47,6 +47,7 @@ function loginSuccess(data) {
 	$("#wrapper").show();
 	// Load Posts and images
 	getPosts();
+	// Load Images
 	getImages();
 }
 
@@ -103,13 +104,10 @@ $(document).ready(function () {
 
     // Register a clicklistener on elements with the class blogImage to add Images as Markupcode into the textarea of the form
     $('.blogImage').on('click', function () {
-
         // Get the value of the attr id of the registred element
         var id = $(this).attr("id");
-
         // Generate Markup with URL and title of the IMage
         var imageUrl = "!["+ $(this).attr("title")+"]("+apiBaseUrl+"image/"+id+")";
-
         // Add the generated Markup into the textarea of the form
         $("#content").val( $("#content").val() + imageUrl);
     });
@@ -134,13 +132,10 @@ $(document).ready(function () {
 	
     // Register a Clickevent on elements with the class close to display a cross on the images to remove the images form the system
     $('body').on('click','.close', function() {
-
         // Find the first img-Tag from the parent of the affected element
         var img = $(this).parent().find("img")[0];
-
         // Remove the image form the system by call deleteImage with passing the image-Id as parameter
         deleteImage($(img).attr("id"));
-
         // Remove the image from the DOM with all associated elements
         $(this).closest("li").remove();
     });

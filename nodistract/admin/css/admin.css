@@ -8,6 +8,11 @@
 	 
  }
  
+ .list-group-item-heading span {
+	 float: right;
+	 cursor: pointer;
+	 padding: 5px;
+ }
  .breadcrumb {
 	 background: white;
  }
@@ -24,9 +29,7 @@
  .alert {
 	 display: none;
 	 margin-top: 20px;
-	 
  }
- 
  
 .image-preview label img {
     height: 100px;

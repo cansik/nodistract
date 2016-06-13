@@ -17,13 +17,15 @@
 		<script type="text/javascript" src="js/includes.js"></script>        										
     </head>
     <body class="fixed-left">
-		<div class="container">
-			<div id="alertError" class="alert alert-danger" role="alert">
-				<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
-				<span class="sr-only">Error:</span>
-					Please check your credentials and try again.
+		<header>
+			<div class="container">
+				<div id="alertError" class="alert alert-danger" role="alert">
+					<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+					<span class="sr-only">Error:</span>
+						Please check your credentials and try again.
+				</div>
 			</div>
-		</div>
+		</header>
         <!-- Begin page -->
         <div id="wrapper" class="main-wrapper">				
 			<nav class="navbar navbar-default">
@@ -138,9 +140,22 @@
                                 </div> <!-- panel -->								
 							</div>
 						</div>
-						<div id="postWrapper" >
-                            
-						</div>
+						<div class="row">
+							<div class="col-sm-12">					     
+							<div class="panel panel-primary">
+                                    <div class="panel-heading"><h3 class="panel-title">Your posts</h3></div>
+                                    <div class="panel-body">									
+										<!-- List group -->										
+										<div id="postWrapper" class="list-group">
+											<a href="#" class="list-group-item active">
+												<h4 class="list-group-item-heading">List group item heading</h4>
+												<p class="list-group-item-text">...</p>
+											</a>
+										</div>
+                                    </div> <!-- panel-body -->
+                                </div> <!-- panel -->								
+							</div>
+						</div>						
                     </div> <!-- container -->                               
                 </div> <!-- content -->
 
@@ -173,21 +188,22 @@
 				</div> <!-- col-->
 			</div>
 		</div>		
-         
-        <!-- jQuery  -->
-        <script type="text/javascript" src="js/libs/jquery.js"></script>
-        <!-- bootstrap  -->
-		<script type="text/javascript" src="bootstrap/js/bootstrap.min.js"></script>       
-		<!-- moment js  -->
-        <script type="text/javascript" src="js/libs/moment.js"></script>
-		<!-- crypto js  -->
-        <script type="text/javascript" src="js/libs/crypto.js"></script>						               
-		<!-- custom js -->		
-        <script type="text/javascript" src="js/spellcheck.js"></script>
-        <script type="text/javascript" src="js/postcontroller.js"></script>
-        <script type="text/javascript" src="js/imagecontroller.js"></script>
-        <script type="text/javascript" src="js/main.js"></script>           
-		<!-- Fileinput js -->
-		<script type="text/javascript" src="fileinput/js/fileinput.min.js"></script>										
+        <footer>
+			<!-- jQuery  -->
+			<script type="text/javascript" src="js/libs/jquery.js"></script>
+			<!-- bootstrap  -->
+			<script type="text/javascript" src="bootstrap/js/bootstrap.min.js"></script>       
+			<!-- moment js  -->
+			<script type="text/javascript" src="js/libs/moment.js"></script>
+			<!-- crypto js  -->
+			<script type="text/javascript" src="js/libs/crypto.js"></script>						               
+			<!-- custom js -->		
+			<script type="text/javascript" src="js/spellcheck.js"></script>
+			<script type="text/javascript" src="js/postcontroller.js"></script>
+			<script type="text/javascript" src="js/imagecontroller.js"></script>
+			<script type="text/javascript" src="js/main.js"></script>           
+			<!-- Fileinput js -->
+			<script type="text/javascript" src="fileinput/js/fileinput.min.js"></script>										
+		</footer>
     </body>
 </html>
