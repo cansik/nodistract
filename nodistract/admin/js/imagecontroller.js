@@ -64,7 +64,6 @@ function deleteImage(imageId) {
  */
 function generateImage(image) {
     var imageId = image.id;
-	console.log(image.data);
     var label = "<li><article><label for='cb_"+imageId+"'><img class='blogImage' src='" + image.data + "' title='" + image.title + "' id='"+imageId+"'/><span class='close'></span></label></article></li>";
     return label;
 }
@@ -78,7 +77,7 @@ function uploadFiles(){
     var files = document.querySelector('input[type=file]').files;
 
     if (files) {
-        // Call our inside-Function for every choosen file
+        // Call readAndPreview for every choosen file
         jQuery.each(files, function() {
             readAndPreview(this);
         });
