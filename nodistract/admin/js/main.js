@@ -102,7 +102,7 @@ $(document).ready(function () {
     $('#loginForm').on('submit', login);
 
     // Register a clicklistener on elements with the class blogImage to add Images as Markupcode into the textarea of the form
-    $('.blogImage').on('click', function () {
+    $('body').on('click', '.blogImage', function () {
 
         // Get the value of the attr id of the registred element
         var id = $(this).attr("id");
