@@ -64,11 +64,15 @@ function logout(){
 /**
  * Function to clear all fields of the form
  */
-function clearForm(){
+function clearPostForm(){
     $("#title").val("");
     $("#content").val("");
     $("#entryId").val("");
     $("#publishEntry").attr("checked", false);
+}
+
+function clearImageForm() {
+	$("#fileBrowser").fileinput('clear');		
 }
 
 /**
@@ -112,16 +116,22 @@ $(document).ready(function () {
 
     // Register a Clickevent on the elment with the id btnClear to clear the form
     $("#btnClear").click(function () {
-        clearForm();
+        clearPostForm();
     });
 
     // Register a Clickevent on the elment with the id btnSave to save a post and clear the form
     $("#addPostForm").submit(function (e) {
-		e.preventDefault();
+		e.preventDefault();		
         savePost();
-        clearForm();
+        clearPostForm();
     });
-
+	
+	 $("#addImageForm").submit(function (e) {
+		e.preventDefault();		
+        uploadFiles();
+		clearImageForm();
+     });		
+	
     // Register a Clickevent on elements with the class close to display a cross on the images to remove the images form the system
     $('body').on('click','.close', function() {
 

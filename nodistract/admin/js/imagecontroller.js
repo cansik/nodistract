@@ -96,13 +96,10 @@ function readAndPreview(file) {
 
     // Make sure `file.name` matches our extensions criteria
     if (/\.(jpe?g|png|gif)$/i.test(file.name)) {
-
         // Create a FileReader to read a single file
         var reader = new FileReader();
        // reader.onload = function (event) {
         reader.addEventListener("load", function () {
-
-
             // read attributes from file and store them into an object
             var object = {"title": file.name, "data": this.result};
 

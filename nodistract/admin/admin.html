@@ -11,9 +11,10 @@
         <title>Nodistract</title>        
 
         <link href="bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css">
+		<link href="fileinput/css/fileinput.min.css" media="all" rel="stylesheet" type="text/css" />				
 		<link href="css/admin.css" rel="stylesheet" type="text/css">      	
 		
-		<script type="text/javascript" src="js/includes.js"></script>        
+		<script type="text/javascript" src="js/includes.js"></script>        										
     </head>
     <body class="fixed-left">
 		<div class="container">
@@ -90,7 +91,7 @@
                                                 <div class="form-group">
                                                     <div class="col-lg-offset-2 col-lg-10">
                                                         <button class="btn btn-primary" type="submit">Save</button>
-                                                        <button class="btn btn-default" type="button">Cancel</button>
+                                                        <button class="btn btn-default" type="button" onclick="clearPostForm()">Cancel</button>
                                                     </div>
                                                 </div>
                                             </form>
@@ -98,7 +99,45 @@
                                     </div> <!-- panel-body -->
                                 </div> <!-- panel -->
                             </div>
-						</div>						
+						</div>	
+						<div class="row">
+							<div class="col-sm-12">
+                                <div class="panel panel-primary">
+                                    <div class="panel-heading"><h3 class="panel-title">Add image</h3></div>
+                                    <div class="panel-body">
+                                        <div class="form">
+                                            <form class="cmxform form-horizontal tasi-form" id="addImageForm" method="get" action="#">
+                                                <div class="form-group">
+                                                    <label for="title" class="control-label col-lg-2">Select file</label>
+                                                    <div class="col-lg-10">                                                        														
+														<input id="fileBrowser" type="file" class="file" multiple data-preview-file-type="text">																												
+                                                    </div>
+                                                </div>												
+                                            </form>
+                                        </div> <!-- .form -->
+                                    </div> <!-- panel-body -->
+                                </div> <!-- panel -->
+                            </div>
+						</div>		
+						<div class="row">
+							<div class="col-sm-12">
+							<div class="panel panel-primary">
+                                    <div class="panel-heading"><h3 class="panel-title">Images</h3></div>
+                                    <div class="panel-body">
+                                        <div class="form">
+                                            <form class="cmxform form-horizontal tasi-form" method="get" action="#">
+                                                <div class="form-group">
+                                                    <div id="images" class="container image-preview">
+														<ul>
+														</ul>
+													</div>
+                                                </div>												
+                                            </form>
+                                        </div> <!-- .form -->
+                                    </div> <!-- panel-body -->
+                                </div> <!-- panel -->								
+							</div>
+						</div>
 						<div id="postWrapper" >
                             
 						</div>
@@ -147,6 +186,8 @@
         <script type="text/javascript" src="js/spellcheck.js"></script>
         <script type="text/javascript" src="js/postcontroller.js"></script>
         <script type="text/javascript" src="js/imagecontroller.js"></script>
-        <script type="text/javascript" src="js/main.js"></script>                                              
+        <script type="text/javascript" src="js/main.js"></script>           
+		<!-- Fileinput js -->
+		<script type="text/javascript" src="fileinput/js/fileinput.min.js"></script>										
     </body>
 </html>
