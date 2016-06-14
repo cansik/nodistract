@@ -78,6 +78,7 @@ function uploadFiles(){
 
     if (files) {
         // Call our inside-Function for every choosen file
+        // Call readAndPreview for every choosen file
         jQuery.each(files, function() {
             readAndPreview(this);
         });
