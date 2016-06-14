@@ -94,6 +94,7 @@ $(document).ready(function () {
         // Load Posts and images
         getPosts();
         getImages();
+
     } else {
         // show the login-form        		
         $("#loginWrapper").show();		
@@ -108,8 +109,15 @@ $(document).ready(function () {
         var id = $(this).attr("id");
         // Generate Markup with URL and title of the IMage
         var imageUrl = "!["+ $(this).attr("title")+"]("+apiBaseUrl+"image/"+id+")";
+
+        // Generate a Placeholder for the image tag to avoid spellchecking on the imagetag
+        var imageIdPlaceholder = "!__"+id+"__!";
+
+        // Push the image with the placeholder and the imagetag into an array
+        arrPostImages.push({"id":"!__"+id+"__!","tag":imageUrl});
+
         // Add the generated Markup into the textarea of the form
-        $("#content").val( $("#content").val() + imageUrl);
+        $("#content").val( $("#content").val() + imageIdPlaceholder);
     });
 
     // Register a Clickevent on the elment with the id btnClear to clear the form

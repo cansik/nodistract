@@ -4,3 +4,5 @@ var apiBaseUrl = 'http://easyguet.ch/nodistract/public/api/';
 var redirectUrl = 'https://easyguet.ch/nodistract/public/';
 // Constant for Spell-API
 var spellChecker = 'https://bingapis.azure-api.net/api/v5/spellcheck?mode=spell';
+// array for images
+var arrPostImages = [];

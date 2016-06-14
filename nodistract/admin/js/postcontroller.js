@@ -21,6 +21,11 @@ function addPost() {
     // Check content of Post with Bing Check Spell API
     var content = checkSpell($("#content").val());
 
+    // Replace all ImagesPlaceholder with the correct image-Tag
+    $(arrPostImages).each(function(){
+       content = content.replace(this.id,this.tag);
+    });
+
     // Object which contains the content of a post
     var postBody = {
         "title": $("#title").val(),
@@ -36,11 +41,11 @@ function addPost() {
         url: apiBaseUrl + "post?token=" + localStorage.token,
         data: JSON.stringify(postBody),
         dataType: 'json',
-        success: function (data) {
-            console.log("Add completed");
-        },
         async: false
     });
+
+    // Clear the imagearray for the new post
+    arrPostImages = [];
 }
 
 /**
