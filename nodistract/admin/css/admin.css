@@ -4,32 +4,43 @@
  }
  
  .main-wrapper {
-	 display: none;
-	 
+	 display: none; 
  }
  
- .list-group-item-heading span {
-	 float: right;
-	 cursor: pointer;
-	 padding: 5px;
- }
- .breadcrumb {
-	 background: white;
+ .list-group-item-heading .glyphicon {
+	float: right;
+	cursor: pointer;
+	padding-right: 0px;
+	padding-bottom: 5px;
+	padding-left: 7px;
+	font-size: 18px;	 
+	color: #337AB7;
  }
  
- .glyphicon {
-	 font-size: 18px;	 
+ .list-group-item {
+	 padding-bottom: 30px !important;
  }
+ 
+.list-group-item-heading {
+   margin-bottom: 10px !important;
+   font-weight: bold;
+}	
+
+.list-group-item-heading .dateWrapper {
+	margin-left: 10px;
+	font-size: 14px;
+	color: #337AB7;
+}
  
  .checkbox {
 	 margin-left: 20px;
 	 margin-top: 4px ! important;
  }
  
- .alert {
-	 display: none;
-	 margin-top: 20px;
- }
+.alert {
+	display: none;
+	margin-top: 20px;
+}
  
 .image-preview label img {
     height: 100px;
