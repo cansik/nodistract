@@ -63,8 +63,7 @@ function deleteImage(imageId) {
  * @returns {string} HTML which displays the image
  */
 function generateImage(image) {
-    var imageId = image.id;
-	console.log(image.data);
+    var imageId = image.id;	
     var label = "<li><article><label for='cb_"+imageId+"'><img class='blogImage' src='" + image.data + "' title='" + image.title + "' id='"+imageId+"'/><span class='close'></span></label></article></li>";
     return label;
 }

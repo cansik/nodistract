@@ -97,16 +97,15 @@ function deletePost(postId) {
 }
 
 /**
- * Function to convert a date into the format HH:MM DD.MM.YYYY
+ * Function to convert a date into the format DD.MM.YYYY
  * @param date
  * @returns {string} formated date
  */
 function returnFullDate(date){
     // Use momentJs to parse date and make easy access on datevalues
     var publishedDate = moment(date);
-
-    // Return date as HH:MM DD.MM.YYYY
-    return publishedDate.hours() + ":"+ publishedDate.minutes() + " "+publishedDate.day()+"."+publishedDate.month()+"."+publishedDate.year();
+    // Return date as DD.MM.YYYY
+    return publishedDate.day()+"."+publishedDate.month()+"."+publishedDate.year();
 }
 
 /**
@@ -114,10 +113,12 @@ function returnFullDate(date){
  * @param post Post-entry
  * @returns {string} HTML which displays a post
  */
-function generatePost(post) {
-    	    	    
-	var node = '<a class="list-group-item"><h4 class="list-group-item-heading">' + post.title + '<span class="glyphicon glyphicon-remove" onclick="deletePost('+ post.id+');" ></span><span class="glyphicon glyphicon-pencil" onclick="loadPostToEdit(' + post.id + ')"></h4><p class="list-group-item-text">' + post.content + '</p><input type="hidden" value="' + post.published + '" name="published"/></a>';	   	
+function generatePost(post) {    	    	    
+	// Generate post element
+	var node = '<a class="list-group-item"><h4 class="list-group-item-heading">' + post.title + '<span class="dateWrapper">' + returnFullDate(post.publish_date.date) + '</span><span class="glyphicon glyphicon-remove" onclick="deletePost('+ post.id+');" ></span><span class="glyphicon glyphicon-pencil" onclick="loadPostToEdit(' + post.id + ')"></span></h4><p class="list-group-item-text">' + post.content + '</p><input type="hidden" value="' + post.published + '" name="published"/></a>';	   	
+	// Wrap element inside article element 
     var article = "<article id='entry_"+post.id+"'>" + node + "</article>";
+	
 	return article;
 }
 
@@ -128,7 +129,11 @@ function generatePost(post) {
 function loadPostToEdit(postId) {
 
     // get title of Post
-    var title = $("#entry_" + postId + " h4.list-group-item-heading").html();
+    var title = $("#entry_" + postId + " h4.list-group-item-heading").clone()    //clone the element
+																	 .children() //select all the children
+																	 .remove()   //remove all the children
+																	 .end()  //again go back to selected element
+																	 .text();
 
     // get Content of Post
     var content = $("#entry_" + postId + " p.list-group-item-text").html();
