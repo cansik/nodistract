@@ -1,9 +1,6 @@
 # Nodistract
 
 Nodistract is a simple content management system for blogs which uses markdown for writing blog posts. It offers a single page app for administration.
-
-It automatically creates a web service for upload and edit blog posts which is discoverable by a Swagger UI.
-
 To provide a great user experience it uses the bing spell checking api which helps you to write your blog posts without any mistakes.
 
 ## Requirements
