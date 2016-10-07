@@ -146,7 +146,7 @@ Description: *Logout your current user.*
 *Example*
 
 ```php
-GET /api/logout?toke=1234
+GET /api/logout?token=1234
 ```
 
 *Result*
